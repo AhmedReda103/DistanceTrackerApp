@@ -1,6 +1,10 @@
 package com.example.distancetrackerapp.utils
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 
 object Constants {
@@ -25,8 +29,19 @@ object Constants {
         val builder : AlertDialog.Builder = AlertDialog.Builder(context)
         builder.setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Cancel"){ dialoge ,_ ->
+            .setNegativeButton("Cancel"){ dialoge ,_ ->
                 dialoge.dismiss()
+            } .setPositiveButton(
+                "GO TO SETTINGS"
+            ) { _, _ ->
+                try {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", context.packageName, null)
+                    intent.data = uri
+                    context.startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+                }
             }
         builder.create().show()
     }
